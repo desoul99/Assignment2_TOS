@@ -52,6 +52,9 @@ public class TakeAwayBillImpl implements TakeAwayBill {
         if(budiniGelatiTotal > 50) {
             total = total * 0.9;
         }
+        if(total < 10) {
+            total = total + 0.5;
+        }
         
         return total;
     }

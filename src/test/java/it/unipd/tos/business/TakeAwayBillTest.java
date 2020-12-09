@@ -108,4 +108,11 @@ public class TakeAwayBillTest {
         }
     }
     
+    @Test
+    public void testUnder10EuroCommission() throws TakeAwayBillException {
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Fiordilatte", 4.50));
+        
+        assertEquals(5, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+    }
+    
 }
