@@ -86,4 +86,13 @@ public class TakeAwayBillTest {
         assertEquals(14.15, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
     }
     
+    @Test
+    public void testMoreThan50EuroInBudiniGelatiDiscount() throws TakeAwayBillException {
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Fiordilatte", 25.50));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Budino, "Biancaneve", 25.50));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Bevanda, "Cola", 9.50));
+        
+        assertEquals(54.45, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+    }
+    
 }

@@ -15,6 +15,7 @@ public class TakeAwayBillImpl implements TakeAwayBill {
     public double getOrderPrice(List<MenuItem> itemsOrdered, User user) 
             throws TakeAwayBillException{
         double total = 0.0D;
+        double budiniGelatiTotal = 0.0D;
         int countGelati = 0;
         double cheapestGelato = Double.MAX_VALUE;
 
@@ -30,16 +31,23 @@ public class TakeAwayBillImpl implements TakeAwayBill {
         
         for(MenuItem item: itemsOrdered) {
             if(item.getItemType() == MenuItem.item.Gelato) {
+                budiniGelatiTotal = budiniGelatiTotal + item.getPrice();
                 countGelati = countGelati + 1;
                 if(item.getPrice() < cheapestGelato) {
                     cheapestGelato = item.getPrice();
                 }
+            }
+            if(item.getItemType() == MenuItem.item.Budino) {
+                budiniGelatiTotal = budiniGelatiTotal + item.getPrice();
             }
             total = total + item.getPrice();
         }
         
         if(countGelati > 5) {
             total = total - (cheapestGelato / 2);
+        }
+        if(budiniGelatiTotal > 50) {
+            total = total * 0.9;
         }
         
         return total;
