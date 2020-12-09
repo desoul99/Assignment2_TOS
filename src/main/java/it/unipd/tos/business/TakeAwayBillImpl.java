@@ -4,6 +4,7 @@
 
 package it.unipd.tos.business;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import it.unipd.tos.model.User;
@@ -11,8 +12,14 @@ import it.unipd.tos.model.MenuItem;
 import it.unipd.tos.business.exception.TakeAwayBillException;
 
 public class TakeAwayBillImpl implements TakeAwayBill {
+    
+    TakeAwayGiveawayImpl giveaway;
+    
+    public TakeAwayBillImpl() {
+        giveaway = new TakeAwayGiveawayImpl();
+    }
 
-    public double getOrderPrice(List<MenuItem> itemsOrdered, User user) 
+    public double getOrderPrice(List<MenuItem> itemsOrdered, User user, LocalTime orderTime) 
             throws TakeAwayBillException{
         double total = 0.0D;
         double budiniGelatiTotal = 0.0D;
@@ -54,6 +61,9 @@ public class TakeAwayBillImpl implements TakeAwayBill {
         }
         if(total < 10) {
             total = total + 0.5;
+        }
+        if(giveaway.giveAwayOrder(user, orderTime)) {
+            return 0;
         }
         
         return total;

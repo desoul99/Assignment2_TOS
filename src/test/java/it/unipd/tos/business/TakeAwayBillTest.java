@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import java.util.List;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import it.unipd.tos.business.exception.TakeAwayBillException;
@@ -25,7 +26,7 @@ public class TakeAwayBillTest {
     @Before
     public void initialize() {
     	takeAwayBill = new TakeAwayBillImpl();
-    	user = new User("Marco", "Dello Iacovo", LocalDate.of(1999, 1, 1), "marco.delloiacovo99@gmail.com", "3201234567");
+    	user = new User("Marco", "Dello Iacovo", LocalDate.of(2010, 1, 1), "marco.delloiacovo99@gmail.com", "3201234567");
     	itemsOrdered = new ArrayList<MenuItem>(); 
     }
     
@@ -36,7 +37,7 @@ public class TakeAwayBillTest {
         itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Coppa Nafta", 2.50));
         itemsOrdered.add(new MenuItem(MenuItem.item.Bevanda, "Fanta", 2.20));
         
-        assertEquals(52.8, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+        assertEquals(52.8, takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00)), 1e-8);
     }
     
     @Test
@@ -44,7 +45,7 @@ public class TakeAwayBillTest {
         itemsOrdered = null;
         
         try {
-            takeAwayBill.getOrderPrice(itemsOrdered, user);
+            takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00));
         }catch(TakeAwayBillException e) {
             assertEquals("La lista itemsOrdered è uguale a null", e.getMessage());
         }
@@ -57,7 +58,7 @@ public class TakeAwayBillTest {
         itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Coppa Nafta", 2.50));
         
         try {
-            takeAwayBill.getOrderPrice(itemsOrdered, user);
+            takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00));
         }catch(TakeAwayBillException e){
             assertEquals("La lista itemsOrdered contiene un item uguale a null", e.getMessage());
         }
@@ -68,7 +69,7 @@ public class TakeAwayBillTest {
         itemsOrdered.add(new MenuItem(MenuItem.item.Budino, "Biancaneve", 4.50));
         
         try {
-            takeAwayBill.getOrderPrice(itemsOrdered, null);
+            takeAwayBill.getOrderPrice(itemsOrdered, null, LocalTime.of(15, 00));
         }catch(TakeAwayBillException e){
             assertEquals("utente è uguale a null", e.getMessage());
         }
@@ -83,7 +84,7 @@ public class TakeAwayBillTest {
         itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Cioccolato", 2.20));
         itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Amarena", 1.10));
         
-        assertEquals(14.15, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+        assertEquals(14.15, takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00)), 1e-8);
     }
     
     @Test
@@ -92,7 +93,7 @@ public class TakeAwayBillTest {
         itemsOrdered.add(new MenuItem(MenuItem.item.Budino, "Biancaneve", 25.50));
         itemsOrdered.add(new MenuItem(MenuItem.item.Bevanda, "Cola", 9.50));
         
-        assertEquals(54.45, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+        assertEquals(54.45, takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00)), 1e-8);
     }
     
     @Test
@@ -102,7 +103,7 @@ public class TakeAwayBillTest {
         }
         
         try {
-            takeAwayBill.getOrderPrice(itemsOrdered, user);
+            takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00));
         }catch(TakeAwayBillException e){
             assertEquals("Ci sono più di 30 items nella lista itemsOrdered", e.getMessage());
         }
@@ -112,7 +113,14 @@ public class TakeAwayBillTest {
     public void testUnder10EuroCommission() throws TakeAwayBillException {
         itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Fiordilatte", 4.50));
         
-        assertEquals(5, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+        assertEquals(5, takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(15, 00)), 1e-8);
+    }
+    
+    @Test
+    public void testFreeOrder() throws TakeAwayBillException {
+        itemsOrdered.add(new MenuItem(MenuItem.item.Bevanda, "Cola", 9.50));
+        takeAwayBill.giveaway.r.setSeed(10);
+        assertEquals(0, takeAwayBill.getOrderPrice(itemsOrdered, user, LocalTime.of(18, 00)), 1e-8);
     }
     
 }
