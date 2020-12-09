@@ -74,4 +74,16 @@ public class TakeAwayBillTest {
         }
     }
     
+    @Test
+    public void testMoreThan5GelatiDiscount() throws TakeAwayBillException {
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Fiordilatte", 4.50));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Puffo", 2.20));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Coppa Nafta", 2.50));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Stracciatella", 2.20));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Cioccolato", 2.20));
+        itemsOrdered.add(new MenuItem(MenuItem.item.Gelato, "Amarena", 1.10));
+        
+        assertEquals(14.15, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
+    }
+    
 }
