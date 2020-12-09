@@ -28,6 +28,9 @@ public class TakeAwayBillImpl implements TakeAwayBill {
         if(user == null) {
             throw new TakeAwayBillException("utente è uguale a null");
         }
+        if(itemsOrdered.size() > 30) {
+            throw new TakeAwayBillException("Ci sono più di 30 items nella lista itemsOrdered");
+        }
         
         for(MenuItem item: itemsOrdered) {
             if(item.getItemType() == MenuItem.item.Gelato) {

@@ -95,4 +95,17 @@ public class TakeAwayBillTest {
         assertEquals(54.45, takeAwayBill.getOrderPrice(itemsOrdered, user), 1e-8);
     }
     
+    @Test
+    public void test30ItemsLimit() {
+        for(int i=0; i<31; i++) {
+            itemsOrdered.add(new MenuItem(MenuItem.item.Budino, "Biancaneve", 4.50));
+        }
+        
+        try {
+            takeAwayBill.getOrderPrice(itemsOrdered, user);
+        }catch(TakeAwayBillException e){
+            assertEquals("Ci sono più di 30 items nella lista itemsOrdered", e.getMessage());
+        }
+    }
+    
 }
